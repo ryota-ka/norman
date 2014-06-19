@@ -1,0 +1,27 @@
+{
+  "name": "Norman",
+  "version": "0.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ryota-ka/norman.git"
+  },
+  "author": "Ryota Kameoka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ryota-ka/norman/issues"
+  },
+  "homepage": "https://github.com/ryota-ka/norman",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-coffee": "^0.10.1",
+    "grunt-contrib-jade": "^0.11.0",
+    "grunt-contrib-stylus": "^0.15.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "socket.io": "^1.0.5"
+  }
+}
