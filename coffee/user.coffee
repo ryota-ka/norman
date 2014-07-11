@@ -1,12 +1,13 @@
 class User
 
+  _ = null
+
   _sessionId = null
   _name = ''
   _room = 0
 
-  constructor: (app, userRoomHandler, sessionId) ->
-    @app = app
-    @userRoomHandler = userRoomHandler
+  constructor: (app, sessionId) ->
+    _ = app
     _sessionId = sessionId
 
 
@@ -32,9 +33,9 @@ class User
 
 
   sendToMe: (message, data) ->
-    @app.messenger.send(_sessionId, message, data)
+    _.messenger.send(_sessionId, message, data)
 
 
 
   getGame: ->
-    return @userRoomHandler.getGameBySessionId(sessionId)
+    return _.userRoomHandler.getGameBySessionId(sessionId)

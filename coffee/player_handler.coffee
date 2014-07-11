@@ -1,17 +1,18 @@
 class PlayerHandler
 
-  _players = null
+  _ = null
+  _game = null
 
-  constructor: (app, userRoomHandler, game) ->
-    @app = app
-    @userRoomHandler = userRoomHandler
-    @game = game
-    _players = []
+  _players = []
 
-    sessionIds = @app.util.shuffle(@userRoomHandler.getSessionIdsByRoom(@game.getRoom()))
+  constructor: (app, game) ->
+    _ = app
+    _game = game
+
+    sessionIds = _.util.shuffle(_.userRoomHandler.getSessionIdsByRoom(_game.getRoom()))
 
     for i in [0...4]
-      _players.push(new Player(@app, @userRoomHandler, @game, @, sessionIds[i], i))
+      _players.push(new Player(_, _game, sessionIds[i], i))
 
 
   init: ->
@@ -31,8 +32,8 @@ class PlayerHandler
 
 
   getPlayerBySeat: (seat) ->
-    if @app.util.isWind(seat)
+    if _.util.isWind(seat)
       return _players[seat]
 
   getPlayerByWind: (wind) ->
-    @getPlayerBySeat((wind + @game.getRound() - 1) % 4)
+    @getPlayerBySeat((wind + _game.getRound() - 1) % 4)

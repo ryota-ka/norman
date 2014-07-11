@@ -5,7 +5,8 @@
     s = io.connect('http://localhost:3000');
     console.dir(s)
     s.on('connect', function() {});
-    return s.on('disconnect', function() {});
+    s.on('disconnect', function() {});
+    s.on('room', function(data) { console.log(data); });
   });
 
 }).call(this);

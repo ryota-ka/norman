@@ -1,16 +1,17 @@
 class Player
 
+  _ = null
+  _game = null
+
   _sessionId = null
   _seat = null
   _points = 25000
   _declaredReady = false
   _isReady = false
 
-  constructor: (app, userRoomHandler, game, playerHandler, sessionId, seat) ->
-    @app = app
-    @userRoomhandler = userRoomHandler
-    @game = game
-    @playerHandler = playerHandler
+  constructor: (app, game, sessionId, seat) ->
+    _ = app
+    _game = game
     _sessionId = sessionId
     _seat = seat
 
@@ -25,7 +26,7 @@ class Player
 
 
   getUser: ->
-    @userRoomhandler.getUserBySessionId(_sessionId)
+    _.userRoomHandler.getUserBySessionId(_sessionId)
 
 
   getSeat: ->
@@ -33,7 +34,7 @@ class Player
 
 
   getWind: ->
-    (3 * (@game.getRound() - 1) + _seat) % 4
+    (3 * (_game.getRound() - 1) + _seat) % 4
 
 
   getPoints: ->
@@ -67,7 +68,7 @@ class Player
     if _declaredReady
       _isReady = true
       _points -= 1000
-      @game.addDeposit()
+      _game.addDeposit()
 
 
   send: (message, action) ->

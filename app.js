@@ -131,19 +131,19 @@
   })();
 
   TileHandler = (function() {
-    var _kinds, _tiles;
+    var _, _game, _kinds, _tiles;
+
+    _ = null;
+
+    _game = null;
 
     _kinds = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 31, 31, 31, 31, 33, 33, 33, 33, 35, 35, 35, 35, 37, 37, 37, 37, 41, 41, 41, 41, 43, 43, 43, 43, 45, 45, 45, 45];
 
-    _tiles = null;
+    _tiles = [];
 
-    function TileHandler(app, userRoomHandler, game, hand) {
-      var _app, _game, _hand, _userRoomHandler;
-      _app = app;
-      _userRoomHandler = userRoomHandler;
+    function TileHandler(app, game) {
+      _ = app;
       _game = game;
-      _hand = hand;
-      _tiles = [];
     }
 
     TileHandler.prototype.init = function() {
@@ -211,7 +211,11 @@
   })();
 
   Player = (function() {
-    var _declaredReady, _isReady, _points, _seat, _sessionId;
+    var _, _declaredReady, _game, _isReady, _points, _seat, _sessionId;
+
+    _ = null;
+
+    _game = null;
 
     _sessionId = null;
 
@@ -223,11 +227,9 @@
 
     _isReady = false;
 
-    function Player(app, userRoomHandler, game, playerHandler, sessionId, seat) {
-      this.app = app;
-      this.userRoomhandler = userRoomHandler;
-      this.game = game;
-      this.playerHandler = playerHandler;
+    function Player(app, game, sessionId, seat) {
+      _ = app;
+      _game = game;
       _sessionId = sessionId;
       _seat = seat;
     }
@@ -240,7 +242,7 @@
     Player.prototype.getSessionId = _sessionId;
 
     Player.prototype.getUser = function() {
-      return this.userRoomhandler.getUserBySessionId(_sessionId);
+      return _.userRoomHandler.getUserBySessionId(_sessionId);
     };
 
     Player.prototype.getSeat = function() {
@@ -248,7 +250,7 @@
     };
 
     Player.prototype.getWind = function() {
-      return (3 * (this.game.getRound() - 1) + _seat) % 4;
+      return (3 * (_game.getRound() - 1) + _seat) % 4;
     };
 
     Player.prototype.getPoints = function() {
@@ -284,7 +286,7 @@
       if (_declaredReady) {
         _isReady = true;
         _points -= 1000;
-        return this.game.addDeposit();
+        return _game.addDeposit();
       }
     };
 
@@ -297,19 +299,21 @@
   })();
 
   PlayerHandler = (function() {
-    var _players;
+    var _, _game, _players;
 
-    _players = null;
+    _ = null;
 
-    function PlayerHandler(app, userRoomHandler, game) {
+    _game = null;
+
+    _players = [];
+
+    function PlayerHandler(app, game) {
       var i, sessionIds, _i;
-      this.app = app;
-      this.userRoomHandler = userRoomHandler;
-      this.game = game;
-      _players = [];
-      sessionIds = this.app.util.shuffle(this.userRoomHandler.getSessionIdsByRoom(this.game.getRoom()));
+      _ = app;
+      _game = game;
+      sessionIds = _.util.shuffle(_.userRoomHandler.getSessionIdsByRoom(_game.getRoom()));
       for (i = _i = 0; _i < 4; i = ++_i) {
-        _players.push(new Player(this.app, this.userRoomHandler, this.game, this, sessionIds[i], i));
+        _players.push(new Player(_, _game, sessionIds[i], i));
       }
     }
 
@@ -338,13 +342,13 @@
     };
 
     PlayerHandler.prototype.getPlayerBySeat = function(seat) {
-      if (this.app.util.isWind(seat)) {
+      if (_.util.isWind(seat)) {
         return _players[seat];
       }
     };
 
     PlayerHandler.prototype.getPlayerByWind = function(wind) {
-      return this.getPlayerBySeat((wind + this.game.getRound() - 1) % 4);
+      return this.getPlayerBySeat((wind + _game.getRound() - 1) % 4);
     };
 
     return PlayerHandler;
@@ -352,7 +356,11 @@
   })();
 
   Hand = (function() {
-    var _availableCallings, _calling, _dices, _oneShotAvailable, _readyDeclared, _readyDeclaredTurn, _sacredDiscard, _turn, _turnStatus, _waitedTiles, _whatTodo;
+    var _, _availableCallings, _calling, _dices, _game, _oneShotAvailable, _readyDeclared, _readyDeclaredTurn, _sacredDiscard, _turn, _turnStatus, _waitedTiles, _whatTodo;
+
+    _ = null;
+
+    _game = null;
 
     _dices = null;
 
@@ -377,22 +385,21 @@
     _sacredDiscard = [[false, false, false, false], [false, false, false, false], [false, false, false, false]];
 
     function Hand(app, userRoomHandler, game) {
-      var i, _i, _tileHandler;
-      this.app = app;
-      this.userRoomHandler = this.userRoomHandler;
-      this.game = game;
+      var i, _i;
+      _ = app;
+      _game = game;
       _dices = [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)];
-      _tileHandler = new TileHandler(this.app, this.userRoomHandler, this.game, this);
+      this.tileHandler = new TileHandler(_, _game);
       for (i = _i = 0; _i < 4; i = ++_i) {
-        this.game.sendByWind(i, 'startHand', {
+        _game.sendByWind(i, 'startHand', {
           wind: i,
-          round: this.game.getRound(),
-          deposits: this.game.getDeposits(),
-          counters: this.game.getCounters(),
+          round: _game.getRound(),
+          deposits: _game.getDeposits(),
+          counters: _game.getCounters(),
           dices: _dices
         });
       }
-      this.game.getPlayerHandler.init();
+      _game.getPlayerHandler.init();
     }
 
     Hand.prototype.start = function() {
@@ -412,7 +419,7 @@
     };
 
     Hand.prototype.setTurn = function(turn) {
-      if (this.app.util.isWind(turn)) {
+      if (_.util.isWind(turn)) {
         return _turn = turn;
       }
     };
@@ -474,7 +481,7 @@
             data.sidewayIndices.push(3 - (triplet.getFrom() - _calling.getWind() + 4) % 4);
           }
         }
-        this.game.sendByWind(_calling.getWind(), 'selectTilesForCalling', data);
+        _game.sendByWind(_calling.getWind(), 'selectTilesForCalling', data);
         this.setTurnStatus(2);
         return this.whatToDo;
       }
@@ -492,7 +499,7 @@
     };
 
     Hand.prototype.abortiveDraw = function(type) {
-      return this.game.sendAll('abortiveDraw', type);
+      return _game.sendAll('abortiveDraw', type);
     };
 
     return Hand;
@@ -500,7 +507,9 @@
   })();
 
   Game = (function() {
-    var _counters, _deposits, _room, _round;
+    var _, _counters, _deposits, _room, _round;
+
+    _ = null;
 
     _room = null;
 
@@ -510,17 +519,16 @@
 
     _counters = 0;
 
-    function Game(app, userRoomHandler, room) {
-      this.app = app;
-      this.userRoomHandler = userRoomHandler;
+    function Game(app, room) {
+      _ = app;
       _room = room;
-      this.playerHandler = new PlayerHandler(this.app, this.userRoomHandler, this);
+      this.playerHandler = new PlayerHandler(_, this);
     }
 
     Game.prototype.start = function() {
       var dices;
       dices = [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)];
-      this.hand = new Hand(this.app, this.userRoomHandler, this);
+      this.hand = new Hand(_, this);
       return this.hand.start();
     };
 
@@ -564,7 +572,7 @@
     Game.prototype.transferDeposits = function(wind) {
       var points;
       if (_deposits !== 0) {
-        if (this.app.util.isWind(wind)) {
+        if (_.util.isWind(wind)) {
           points = this.getDeposits * 1000;
           this.playerHandler.getPlayerByWind(wind).addPoints(points);
           this.resetDeposits;
@@ -586,14 +594,12 @@
   })();
 
   Messenger = (function() {
-    var _app, _io;
-
-    _app = null;
+    var _io;
 
     _io = null;
 
     function Messenger(app, io) {
-      _app = app;
+      this.app = app;
       _io = io;
     }
 
@@ -601,17 +607,22 @@
       return _io.sockets.on('connection', (function(_this) {
         return function(socket) {
           console.log("client " + socket.id + " connected");
-          _app.userRoomHandler.addUser(socket.id);
+          _this.app.userRoomHandler.addUser(socket.id);
+          socket.join(0);
           return socket.on('disconnect', function() {
             console.log("client " + socket.id + " disconnected");
-            return _app.userRoomHandler.removeUser(socket.id);
+            return _this.app.userRoomHandler.removeUser(socket.id);
           });
         };
       })(this));
     };
 
     Messenger.prototype.send = function(sessionId, message, data) {
-      return _io.sockets.socket(sessionId).emit(message, data);
+      return _io.sockets.connected[sessionId].emit(message, data);
+    };
+
+    Messenger.prototype.sendToRoom = function(room, message, data) {
+      return _io.sockets.to(room).emit(message, data);
     };
 
     Messenger.prototype.sendAll = function(message, data) {
@@ -623,7 +634,9 @@
   })();
 
   User = (function() {
-    var _name, _room, _sessionId;
+    var _, _name, _room, _sessionId;
+
+    _ = null;
 
     _sessionId = null;
 
@@ -631,9 +644,8 @@
 
     _room = 0;
 
-    function User(app, userRoomHandler, sessionId) {
-      this.app = app;
-      this.userRoomHandler = userRoomHandler;
+    function User(app, sessionId) {
+      _ = app;
       _sessionId = sessionId;
     }
 
@@ -661,11 +673,11 @@
     };
 
     User.prototype.sendToMe = function(message, data) {
-      return this.app.messenger.send(_sessionId, message, data);
+      return _.messenger.send(_sessionId, message, data);
     };
 
     User.prototype.getGame = function() {
-      return this.userRoomHandler.getGameBySessionId(sessionId);
+      return _.userRoomHandler.getGameBySessionId(sessionId);
     };
 
     return User;
@@ -673,65 +685,69 @@
   })();
 
   UserRoomHandler = (function() {
-    var _rooms;
+    var _, _games, _rooms, _users;
+
+    _ = null;
+
+    _users = [];
+
+    _games = [];
 
     _rooms = [0, 102, 103, 105, 201, 202, 203, 205, 301, 302, 303, 305, 401, 402, 403, 405];
 
     function UserRoomHandler(app) {
-      this.app = app;
-      this.users = [];
-      this.games = [];
+      _ = app;
     }
 
     UserRoomHandler.prototype.addUser = function(sessionId) {
-      return this.users[sessionId] = new User(this.app, this, sessionId);
+      _users[sessionId] = new User(_, sessionId);
+      return _users[sessionId].setRoom(205);
     };
 
     UserRoomHandler.prototype.removeUser = function(sessionId) {
-      return delete this.users[sessionId];
+      return delete _users[sessionId];
     };
 
     UserRoomHandler.prototype.getUserBySessionId = function(sessionId) {
-      if (this.users[sessionId] != null) {
-        return this.users[sessionId];
+      if (_users[sessionId] != null) {
+        return _users[sessionId];
       } else {
         return void 0;
       }
     };
 
     UserRoomHandler.prototype.getNameBySessionId = function(clientId) {
-      if (this.users[sessionId] != null) {
-        return this.users[sessionId].name;
+      if (_users[sessionId] != null) {
+        return _users[sessionId].name;
       } else {
         return void 0;
       }
     };
 
     UserRoomHandler.prototype.getRoomBySessionId = function(sessionId) {
-      if (this.users[sessionId] != null) {
-        return this.users[sessionId].room;
+      if (_users[sessionId] != null) {
+        return _users[sessionId].room;
       } else {
         return void 0;
       }
     };
 
     UserRoomHandler.prototype.getGameBySessionId = function(sessionId) {
-      if ((this.users[sessionId] != null) && (this.games[this.users[sessionId].room] != null)) {
-        return this.games[this.users[sessionId].room];
+      if ((_users[sessionId] != null) && (_games[_users[sessionId].room] != null)) {
+        return _games[_users[sessionId].room];
       } else {
         return void 0;
       }
     };
 
     UserRoomHandler.prototype.getSessionIdsByRoom = function(room) {
-      var sessionIds, user, _i, _len, _ref;
+      var sessionIds, user, _i, _len;
       sessionIds = [];
       if (_rooms[room] != null) {
-        _ref = this.users;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          user = _ref[_i];
-          if (this.users.room === room) {
-            sessionIds.push(this.users.room);
+        for (_i = 0, _len = _users.length; _i < _len; _i++) {
+          user = _users[_i];
+          if (_users.room === room) {
+            sessionIds.push(_users.room);
           }
         }
         return sessionIds;
@@ -742,47 +758,54 @@
 
     UserRoomHandler.prototype.setRoom = function(sessionId, room) {
       var oldRoom, user;
-      if ((this.users[sessionId] != null) && _rooms.indexOf(room) && this.users[sessionId].room !== room) {
-        user = this.users[sessionId];
+      if ((_users[sessionId] != null) && _rooms.indexOf(room) && _users[sessionId].room !== room) {
+        user = _users[sessionId];
         oldRoom = user.room;
         user.setRoom(room);
+        this.checkGameStart(room);
         return this.sendPopulation();
       }
     };
 
-    UserRoomHandler.prototype.setRoom = function(sessionId, name) {
+    UserRoomHandler.prototype.setName = function(sessionId, name) {
       var _ref;
-      if (((_ref = this.users[sessionId]) != null ? _ref.name : void 0) !== name) {
-        return this.users[sessionId].setName(name);
+      if (((_ref = _users[sessionId]) != null ? _ref.name : void 0) !== name) {
+        return _users[sessionId].setName(name);
       }
     };
 
     UserRoomHandler.prototype.finishGame = function(room) {
-      if (this.games[room]) {
+      if (_games[room]) {
 
       }
     };
 
     UserRoomHandler.prototype.clearGame = function(room) {
-      if (this.games[room] != null) {
+      if (_games[room] != null) {
 
       }
     };
 
     UserRoomHandler.prototype.sendPopulation = function() {
-      var key, population, user, value, _i, _j, _len, _len1, _ref, _results;
+      var key, population, user, value, _i, _j, _len, _len1, _results;
       population = [];
       for (key = _i = 0, _len = _rooms.length; _i < _len; key = ++_i) {
         value = _rooms[key];
         population[key] = 0;
       }
-      _ref = this.users;
       _results = [];
-      for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
-        user = _ref[_j];
+      for (_j = 0, _len1 = _users.length; _j < _len1; _j++) {
+        user = _users[_j];
         _results.push(population[user.room]++);
       }
       return _results;
+    };
+
+    UserRoomHandler.prototype.checkGameStart = function(room) {
+      if (room !== 0 && this.getSessionIdsByRoom(room).length === 4) {
+        _games[room] = new Game(_, room);
+        return _games[room].start();
+      }
     };
 
     return UserRoomHandler;
@@ -793,7 +816,7 @@
     function App(io) {
       this.util = new Util();
       this.messenger = new Messenger(this, io);
-      this.userRoomHandler = new UserRoomHandler();
+      this.userRoomHandler = new UserRoomHandler(this);
     }
 
     App.prototype.init = function() {

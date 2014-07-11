@@ -1,21 +1,22 @@
 class Game
 
+  _ = null
+
   _room = null
   _round = 1
   _deposits = 0
   _counters = 0
 
-  constructor: (app, userRoomHandler, room) ->
-    @app = app
-    @userRoomHandler = userRoomHandler
+  constructor: (app, room) ->
+    _ = app
     _room = room
-    @playerHandler = new PlayerHandler(@app, @userRoomHandler, @)
+    @playerHandler = new PlayerHandler(_, @)
 
 
   start: ->
     dices = [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)]
     # @todo tell users game has started
-    @hand = new Hand(@app, @userRoomHandler, @)
+    @hand = new Hand(_, @)
     @hand.start()
 
 
@@ -58,7 +59,7 @@ class Game
 
   transferDeposits: (wind) ->
     unless _deposits == 0
-      if @app.util.isWind(wind)
+      if _.util.isWind(wind)
         points = @getDeposits * 1000
         @playerHandler.getPlayerByWind(wind).addPoints(points)
         @resetDeposits

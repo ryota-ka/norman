@@ -1,5 +1,8 @@
 class Hand
 
+  _ = null
+  _game = null
+
   _dices = null
   _turn = 0
   _turnStatus = null
@@ -13,23 +16,22 @@ class Hand
   _sacredDiscard = [[false, false, false, false], [false, false, false, false], [false, false, false, false]]
 
   constructor: (app, userRoomHandler, game) ->
-    @app = app
-    @userRoomHandler = @userRoomHandler
-    @game = game
+    _ = app
+    _game = game
 
     _dices = [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)]
 
-    _tileHandler = new TileHandler(@app, @userRoomHandler, @game, @)
+    @tileHandler = new TileHandler(_, _game)
 
     for i in [0...4]
-      @game.sendByWind i, 'startHand',
+      _game.sendByWind i, 'startHand',
         wind: i
-        round: @game.getRound()
-        deposits: @game.getDeposits()
-        counters: @game.getCounters()
+        round: _game.getRound()
+        deposits: _game.getDeposits()
+        counters: _game.getCounters()
         dices: _dices
 
-    @game.getPlayerHandler.init()
+    _game.getPlayerHandler.init()
 
 
   start: ->
@@ -49,7 +51,7 @@ class Hand
 
 
   setTurn: (turn) ->
-    _turn = turn if @app.util.isWind(turn)
+    _turn = turn if _.util.isWind(turn)
 
   draw: ->
     @completeReady()
@@ -100,7 +102,7 @@ class Hand
         data.sidewayIndices = []
         for triplet in _tileHandler.getOpenTripletsByWind(_calling.getWind())
           data.sidewayIndices.push(3 - (triplet.getFrom() - _calling.getWind() + 4) % 4)
-      @game.sendByWind(_calling.getWind(), 'selectTilesForCalling', data)
+      _game.sendByWind(_calling.getWind(), 'selectTilesForCalling', data)
       @setTurnStatus(2)
       @whatToDo
 
@@ -116,7 +118,7 @@ class Hand
     #
     #
   abortiveDraw: (type) ->
-    @game.sendAll('abortiveDraw', type)
+    _game.sendAll('abortiveDraw', type)
     # @todo finish game
     #
 
