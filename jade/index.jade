@@ -1,0 +1,155 @@
+doctype html
+html(lang='ja')
+  head
+    meta(charset='utf-8')
+    link(rel='stylesheet', type='text/css', href='./css/style.css')
+    script(type='text/javascript', src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+    script(type='text/javascript', src='/socket.io/socket.io.js')
+    script(type='text/javascript', src='./main.js')
+
+    title='Norman'
+
+  body
+    #status.offline offline
+    #container
+      #sidebar
+        p.room
+        p.round
+        #pointbars
+          p#deposits
+            img(src='./images/pointbars/1000.png', alt='供託')
+          p#counters
+            img(src='./images/pointbars/100.png', alt='本場')
+        #doraIndicatorWrapper
+          p.tile.reversed
+          p.tile.reversed
+          p.tile.reversed
+          p.tile.reversed
+          p.tile.reversed
+        #log
+
+      .spacer
+
+      #table_wrapper
+        .spacer
+          #table_and_button
+            #table
+
+              .float_left(style='width: 150px;')
+
+                #opposite_open_meld_wrapper.open_meld_wrapper
+
+                #left_player.clear_left
+                  #left_discards.discard_wrapper
+                    .discard_row
+                    .discard_row
+                    .discard_row
+
+                #right_open_meld_wrapper.open_meld_wrapper
+
+               .float_left(style='width: 200px')
+
+                 #opposite_player
+                   #opposite_discards.discard_wrapper
+                     .discard_row
+                     .discard_row
+                     .discard_row
+
+                 #center
+                   canvas#wall_number(width='100', height='100')
+
+                 #me
+                   #my_discards.discard_wrapper
+                     .discard_row
+                     .discard_row
+                     .discard_row
+
+
+               .float_left(style='width: 150px;')
+
+                 #left_open_meld_wrapper.open_meld_wrapper
+
+                 #right_player
+                   #right_discards.discard_wrapper
+                     .discard_row
+                     .discard_row
+                     .discard_row
+
+                 #my_open_meld_wrapper.open_meld_wrapper
+
+
+              div
+                #my_hand
+
+
+              #arrow_boxes
+                #arrow_box_top
+                #arrow_box_left
+                #arrow_box_right
+                #arrow_box_bottom
+
+
+              #buttons
+                p#button_kakan 加槓
+                p#button_ankan 暗槓
+                p#button_declare_ready 立直
+                p#button_win_by_draw 自摸和了
+                p#button_pon ポン
+                p#button_chi チー
+                p#button_daiminkan カン
+                p#button_win_by_discard ロン
+                p#button_draw ツモ
+                p#button_kyushukyuhai 九種九牌
+
+              div.spacer
+
+            div.spacer
+
+
+    #rooms.full_screen
+      #room_405
+        p.room_number 405
+        .room_members
+      #room_403
+        p.room_number 403
+        .room_members
+      #room_402
+        p.room_number 402
+        .room_members
+      #room_401
+        p.room_number 401
+        .room_members
+      #room_305
+        p.room_number 305
+        .room_members
+      #room_303
+        p.room_number 303
+        .room_members
+      #room_302
+        p.room_number 302
+        .room_members
+      #room_301
+        p.room_number 301
+        .room_members
+      #room_205
+        p.room_number 205
+        .room_members
+      #room_203
+        p.room_number 203
+        .room_members
+      #room_202
+        p.room_number 202
+        .room_members
+      #room_201
+        p.room_number 201
+        .room_members
+      #room_105
+        p.room_number 105
+        .room_members
+      #room_103
+        p.room_number 103
+        .room_members
+      #room_102
+        p.room_number 102
+        .room_members
+

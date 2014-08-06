@@ -1,22 +1,16 @@
 class Calling
 
-  _wind = null
-  _kind = null
-  _choices = []
+  constructor: (_wind, _kind) ->
+    _choices = []
 
 
-  constructor: (wind, kind) ->
-    _wind = wind
-    _kind = kind
+    @getWind = ->
+      _wind
 
 
-  getWind: ->
-    _wind
+    @getKind = ->
+      _kind
 
 
-  getKind: ->
-    _kind
-
-
-  getChoices: ->
-    _choices.concat()
+    @getChoices = ->
+      _choices.concat()
