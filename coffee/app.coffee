@@ -6,5 +6,5 @@ class App
     @userRoomHandler = new UserRoomHandler(@)
 
 
-  init: ->
-    @messenger.init()
+    @init = ->
+      @messenger.init()

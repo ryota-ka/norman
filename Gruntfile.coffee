@@ -26,7 +26,7 @@ module.exports = (grunt) ->
         options:
           join: true
         files: [
-          src: ['coffee/util.coffee', 'coffee/tile.coffee', 'coffee/calling.coffee', 'coffee/open_meld.coffee', 'coffee/tile_handler.coffee', 'coffee/player.coffee', 'coffee/player_handler.coffee', 'coffee/player_handler.coffee', 'coffee/hand.coffee', 'coffee/game.coffee', 'coffee/messenger.coffee', 'coffee/user.coffee', 'coffee/user_room_handler.coffee', 'coffee/app.coffee', 'coffee/server.coffee']
+          src: ['coffee/extensions.coffee', 'coffee/util.coffee', 'coffee/tile.coffee', 'coffee/calling.coffee', 'coffee/open_meld.coffee', 'coffee/tile_handler.coffee', 'coffee/player.coffee', 'coffee/player_handler.coffee', 'coffee/player_handler.coffee', 'coffee/hand.coffee', 'coffee/game.coffee', 'coffee/messenger.coffee', 'coffee/user.coffee', 'coffee/user_room_handler.coffee', 'coffee/app.coffee', 'coffee/server.coffee']
           dest: 'app.js'
         ]
 

@@ -1,41 +1,35 @@
 class User
 
-  _ = null
+  constructor: (app, _sessionId) ->
 
-  _sessionId = null
-  _name = ''
-  _room = 0
-
-  constructor: (app, sessionId) ->
-    _ = app
-    _sessionId = sessionId
+    _name = ''
+    _room = 0
 
 
-  getSessionId: ->
-    return _sessionId
+    @getSessionId = ->
+      _sessionId
 
 
-  getName: ->
-    return _name
+    @getName = ->
+      _name
 
 
-  setName: (name) ->
-    _name = name if name.trim() != ''
+    @setName = (name) ->
+      _name = name if name.trim() != ''
 
 
-  getRoom: ->
-    return _name
+    @getRoom = ->
+      _room
 
 
-  setRoom: (room) ->
-    _room = room
-    @sendToMe('room', room)
+    @setRoom = (room) ->
+      _room = room
+      @sendToMe('room', room)
 
 
-  sendToMe: (message, data) ->
-    _.messenger.send(_sessionId, message, data)
+    @sendToMe = (message, data) ->
+      app.messenger.send(_sessionId, message, data)
 
 
-
-  getGame: ->
-    return _.userRoomHandler.getGameBySessionId(sessionId)
+    @getGame = ->
+      app.userRoomHandler.getGameBySessionId(sessionId)

@@ -1,75 +1,65 @@
 class Player
 
-  _ = null
-  _game = null
-
-  _sessionId = null
-  _seat = null
-  _points = 25000
-  _declaredReady = false
-  _isReady = false
-
-  constructor: (app, game, sessionId, seat) ->
-    _ = app
-    _game = game
-    _sessionId = sessionId
-    _seat = seat
-
-
-  init: ->
+  constructor: (app, game, _sessionId, _seat) ->
+    _points = 25000
     _declaredReady = false
     _isReady = false
 
 
-  getSessionId:
-    _sessionId
+    @init = ->
+      _declaredReady = false
+      _isReady = false
 
 
-  getUser: ->
-    _.userRoomHandler.getUserBySessionId(_sessionId)
+    @getSessionId = ->
+      _sessionId
 
 
-  getSeat: ->
-    _seat
+    @getUser = ->
+      app.userRoomHandler.getUserBySessionId(_sessionId)
 
 
-  getWind: ->
-    (3 * (_game.getRound() - 1) + _seat) % 4
+    @getSeat = ->
+      _seat
 
 
-  getPoints: ->
-    _points
+    @getWind = ->
+      (3 * (game.getRound() - 1) + _seat) % 4
 
 
-  addPoints: (amount) ->
-    if _points + amount < 0
-      all = _points
-      _points = 0
-      # @todo hako
-      return -all
-    else
-      _points += diff
-      return diff
+    @getPoints = ->
+      _points
 
 
-  declareReady: ->
-    unless _declaredReady
-      if _points >= 1000
-        _declaredReady = true
-        return true
+    @addPoints = (amount) ->
+      if _points + amount < 0
+        all = _points
+        _points = 0
+        # @todo hako
+        return -all
       else
-        # @todo send message 'you don't have enough points'
+        _points += diff
+        return diff
+
+
+    @declareReady = ->
+      unless _declaredReady
+        if _points >= 1000
+          _declaredReady = true
+          return true
+        else
+          # @todo send message 'you don't have enough points'
+          return false
+      else
         return false
-    else
-      return false
 
 
-  completeReady: ->
-    if _declaredReady
-      _isReady = true
-      _points -= 1000
-      _game.addDeposit()
+    @completeReady = ->
+      if _declaredReady
+        _isReady = true
+        _points -= 1000
+        game.addDeposit()
 
 
-  send: (message, action) ->
-    @getUser.sendToMe(message, action)
+    @send = (message, action) ->
+      @getUser.sendToMe(message, action)

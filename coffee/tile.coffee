@@ -1,21 +1,14 @@
 class Tile
 
-  _id = null
-  _kind = null
+  constructor: (_id, _kind) ->
+
+    @getId = ->
+      _id
 
 
-  constructor: (id, kind) ->
-    _id = id
-    _kind = kind
+    @getKind = ->
+      _kind
 
 
-  getId: ->
-    _id
-
-
-  getKind: ->
-    _kind
-
-
-  setKind: (kind) -> # @debug
-    _kind = kind
+    @setKind = (kind) -> # @debug
+      _kind = kind
